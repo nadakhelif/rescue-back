@@ -4,10 +4,6 @@ import { HasIdInterface } from './hasId.interface';
 
 export class CrudService<Entity extends HasIdInterface> {
   constructor(private repository: Repository<Entity>) {}
-  async create(createDto): Promise<Entity> {
-    return await this.repository.save(createDto);
-  }
-
   findAll(): Promise<Entity[]> {
     return this.repository.find();
   }
@@ -29,7 +25,7 @@ export class CrudService<Entity extends HasIdInterface> {
   }
 
   async remove(id): Promise<{ deleted: boolean }> {
-    const result = await this.repository.delete({ id });
+    const result = await this.repository.softDelete({ id });
     if (!result.affected) {
       throw new NotFoundException();
     }

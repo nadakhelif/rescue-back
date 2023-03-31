@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserEntity } from './entities/user.entity';
+import { User } from './entities/user';
 import { JwtService } from '@nestjs/jwt';
 import {
   ConflictException,
@@ -11,15 +11,18 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { LoginUserDto } from './dto/login-user.dto';
+import { CrudService } from '../common/crud.service';
 
 @Injectable()
-export class UserService {
+export class UserService extends CrudService<User> {
   constructor(
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
     private jwtService: JwtService,
-  ) {}
-  async create(createUserDto: CreateUserDto): Promise<Partial<UserEntity>> {
+  ) {
+    super(userRepository);
+  }
+  async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
     const user = await this.userRepository.create({
       ...createUserDto,
     });
@@ -67,19 +70,25 @@ export class UserService {
       throw new NotFoundException('username ou password erronée');
     }
   }
-  findAll() {
-    return `This action returns all user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.findOne({ where: { id: id } });
+    if (!user) {
+      throw new NotFoundException('id erronée');
+    } else {
+      if (updateUserDto.password) {
+        const saltOrRounds = 10;
+        updateUserDto.password = await bcrypt.hash(
+          updateUserDto.password,
+          saltOrRounds,
+        );
+      }
+    }
+    await this.userRepository.update({ id }, updateUserDto);
+    return user;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    await this.userRepository.softDelete({ id });
+    return { deleted: true };
   }
 }

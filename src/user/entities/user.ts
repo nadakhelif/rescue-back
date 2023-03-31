@@ -3,7 +3,7 @@ import { OneToMany, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
 @Entity('user')
-export class UserEntity {
+export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -20,10 +20,15 @@ export class UserEntity {
     unique: true,
   })
   email: string;
+  @Column({
+    length: 8,
+  })
+  phoneNumber: string;
 
   @Column()
   @Exclude()
   password: string;
 
-
+  @Column({ nullable: true, type: 'timestamp' })
+  deletedAt: Date;
 }
