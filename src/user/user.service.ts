@@ -86,9 +86,4 @@ export class UserService extends CrudService<User> {
     await this.userRepository.update({ id }, updateUserDto);
     return user;
   }
-
-  async remove(id: number) {
-    await this.userRepository.softDelete({ id });
-    return { deleted: true };
-  }
 }

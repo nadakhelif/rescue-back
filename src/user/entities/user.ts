@@ -1,4 +1,10 @@
-import { OneToMany, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  OneToMany,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  DeleteDateColumn,
+} from 'typeorm';
 
 import { Exclude } from 'class-transformer';
 
@@ -29,6 +35,6 @@ export class User {
   @Exclude()
   password: string;
 
-  @Column({ nullable: true, type: 'timestamp' })
-  deletedAt: Date;
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }

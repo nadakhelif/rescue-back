@@ -24,11 +24,11 @@ export class CrudService<Entity extends HasIdInterface> {
     return this.repository.save(Entity);
   }
 
-  async remove(id): Promise<{ deleted: boolean }> {
-    const result = await this.repository.softDelete({ id });
-    if (!result.affected) {
+  async softremove(id) {
+    const Entity = await this.repository.findOne({ where: { id } });
+    if (!Entity) {
       throw new NotFoundException();
     }
-    return { deleted: true };
+    return await this.repository.softRemove(Entity);
   }
 }
