@@ -37,4 +37,12 @@ export class User {
 
   @DeleteDateColumn()
   deletedAt?: Date;
+
+  @Column({
+    unique: true,
+  })
+  @Exclude()
+  verificationToken: string;
+  @Column({ default: false })
+  verified: boolean;
 }

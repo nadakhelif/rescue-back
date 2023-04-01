@@ -12,12 +12,15 @@ import {
 } from '@nestjs/common';
 import { LoginUserDto } from './dto/login-user.dto';
 import { CrudService } from '../common/crud.service';
+import { PasswordReset } from '../auth/entities/passwordReset.entity';
 
 @Injectable()
 export class UserService extends CrudService<User> {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(PasswordReset)
+    private passWordRestRepository: Repository<PasswordReset>,
     private jwtService: JwtService,
   ) {
     super(userRepository);
@@ -85,5 +88,63 @@ export class UserService extends CrudService<User> {
     }
     await this.userRepository.update({ id }, updateUserDto);
     return user;
+  }
+  async changeVerifyToTrue(id: number) {
+    try {
+      const user = await this.userRepository.findOne({ where: { id: id } });
+      user.verified = true;
+
+      await this.userRepository.save(user);
+      return user;
+    } catch (e) {
+      throw new ConflictException(`couldn't update verify the id`);
+    }
+  }
+  async getByEmail(email: string): Promise<any> {
+    const user = await this.userRepository.findOne({
+      where: { email: email },
+    });
+    if (!user) {
+      throw new NotFoundException();
+    }
+    return user;
+  }
+  async createPasswordResetToken(id: number) {
+    try {
+      const passwordReset = new PasswordReset();
+      passwordReset.userId = id;
+      const savedToken = await this.passWordRestRepository.save(passwordReset);
+      return savedToken;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async verifyPasswordResetToken(userId: number, token: string) {
+    const foundToken = await this.passWordRestRepository.findOne({
+      where: { token: token, userId: userId },
+    });
+    return foundToken;
+  }
+
+  async deletePasswordResetToken(token: string) {
+    const deletedToken = await this.passWordRestRepository.findOne({
+      where: { token: token },
+    });
+
+    await this.passWordRestRepository.delete(deletedToken.id);
+    // .createQueryBuilder()
+    // .delete()
+    // .where('token = :token', { token })
+    // .execute();
+    return deletedToken;
+  }
+
+  async changePassword(id: number, password: string) {
+    const user = await this.userRepository.findOne({ where: { id: id } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    user.password = password;
+    await this.userRepository.save(user);
   }
 }
