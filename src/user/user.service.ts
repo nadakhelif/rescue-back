@@ -13,6 +13,8 @@ import {
 import { LoginUserDto } from './dto/login-user.dto';
 import { CrudService } from '../common/crud.service';
 import { PasswordReset } from '../auth/entities/passwordReset.entity';
+import { randomBytes } from 'crypto';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class UserService extends CrudService<User> {
@@ -22,21 +24,29 @@ export class UserService extends CrudService<User> {
     @InjectRepository(PasswordReset)
     private passWordRestRepository: Repository<PasswordReset>,
     private jwtService: JwtService,
+    private emailService: EmailService,
   ) {
     super(userRepository);
   }
   async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
+    createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     const user = await this.userRepository.create({
       ...createUserDto,
     });
-
-    user.password = await bcrypt.hash(user.password, 10);
+    user.verificationToken = randomBytes(20).toString('hex');
     try {
       await this.userRepository.save(user);
     } catch (e) {
-      throw new ConflictException(
-        `Le username et le email doivent être unique`,
+      throw e;
+    }
+    try {
+      await this.emailService.sendVerificationEmail(
+        user.email,
+        user.id,
+        user.verificationToken,
       );
+    } catch (e) {
+      throw e;
     }
     return {
       id: user.id,

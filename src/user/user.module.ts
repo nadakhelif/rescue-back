@@ -6,11 +6,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { PasswordReset } from '../auth/entities/passwordReset.entity';
+import { EmailModule } from '../email/email.module';
 
 const SECRET = 'secret';
 
 @Module({
   imports: [
+    EmailModule,
     TypeOrmModule.forFeature([User]),
     TypeOrmModule.forFeature([PasswordReset]),
     PassportModule.register({

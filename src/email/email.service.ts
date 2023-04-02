@@ -4,8 +4,8 @@ import { MailerService } from '@nestjs-modules/mailer';
 @Injectable()
 export class EmailService {
   constructor(private mailService: MailerService) {}
-  async sendVerificationEmail(to: string, userId: string, userToken: string) {
-    const verificationLink = `https://localhost:3000/verify/${userId}/${userToken}`;
+  async sendVerificationEmail(to: string, id: number, userToken: string) {
+    const verificationLink = `http://localhost:3000/auth/verify/${id}/${userToken}`;
     const response = await this.mailService.sendMail({
       to: 'nadakhelif888@gmail.com',
       from: 'nadakhelif61@gmail.com',

@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/entities/user';
 import { EmailService } from 'src/email/email.service';
+import { LoginUserDto } from '../user/dto/login-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +21,6 @@ export class AuthService {
   async verifyEmail(userId: number, verificationToken: string): Promise<User> {
     try {
       const user = await this.userService.findOne(userId);
-
       if (user.verificationToken === verificationToken) {
         user.verified = true;
         const updatedUser = await this.userService.changeVerifyToTrue(userId);
@@ -29,7 +29,7 @@ export class AuthService {
         return user;
       }
     } catch (error) {
-      throw new ConflictException(`verify email token is incorrect`);
+      throw error;
     }
   }
 
@@ -45,8 +45,11 @@ export class AuthService {
     }
   }
 
-  async login(email: string, password: string) {
-    const user = await this.validateUser(email, password);
+  async login(credentials: LoginUserDto) {
+    const user = await this.validateUser(
+      credentials.email,
+      credentials.password,
+    );
     const payload = { email: user.email };
     return {
       access_token: this.jwtService.sign(payload),

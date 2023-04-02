@@ -7,9 +7,9 @@ export class CreateUserDto {
   @IsNotEmpty()
   lastname: string;
 
-  @IsPhoneNumber('TN', { message: 'invalid phone number' })
-  @IsNotEmpty()
-  phoneNumber: string;
+  // @IsPhoneNumber('TN', { message: 'invalid phone number' })
+  // @IsNotEmpty()
+  // phoneNumber: string;
 
   @IsEmail()
   @IsNotEmpty()

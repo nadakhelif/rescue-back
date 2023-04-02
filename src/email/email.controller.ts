@@ -9,7 +9,7 @@ export class EmailController {
   async validatemail() {
     await this.emailService.sendVerificationEmail(
       'nadakhelif61@gmailcom',
-      '123',
+      123,
       '123',
     );
   }
