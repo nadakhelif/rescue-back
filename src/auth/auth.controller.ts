@@ -27,4 +27,21 @@ export class AuthController {
     const result = await this.authService.verifyEmail(+id, verificationToken);
     return result;
   }
+  @Post('resetpassword')
+  async resetPasswordS(@Body() body: any) {
+    return await this.authService.receiveEmailForPasswordReset(body.email);
+  }
+
+  @Post('/resetpassword/:userId/:resetToken')
+  async resetPasswordE(
+    @Body() body: any,
+    @Param('userId') userId: string,
+    @Param('resetToken') resetToken: string,
+  ) {
+    return await this.authService.resetPassword(
+      +userId,
+      resetToken,
+      body.password,
+    );
+  }
 }

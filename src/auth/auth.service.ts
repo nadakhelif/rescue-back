@@ -59,17 +59,17 @@ export class AuthService {
   async receiveEmailForPasswordReset(email: string) {
     try {
       const user = await this.userService.getByEmail(email);
-      if (user) {
+      if (!user) {
+        throw new NotFoundException('wrong email adress ');
+      } else {
         const resetToken = await this.userService.createPasswordResetToken(
           user.id,
         );
-        // this.emailService.sendPasswordResetEmail(
-        //   email,
-        //   resetToken.userId,
-        //   resetToken.token,
-        // );
-      } else {
-        throw Error('The provided email is invalid!');
+        await this.emailService.sendPasswordResetEmail(
+          email,
+          resetToken.userId,
+          resetToken.token,
+        );
       }
       return { message: 'Password Reset Link Has Been Sent!' };
     } catch (error) {
@@ -86,8 +86,16 @@ export class AuthService {
       if (!resetToken) {
         throw Error('The provided token is invalid!');
       }
-      await this.userService.changePassword(userId, password);
-      await this.userService.deletePasswordResetToken(resetTokenP);
+      try {
+        await this.userService.changePassword(userId, password);
+      } catch (e) {
+        throw Error('change password didnt work');
+      }
+      try {
+        await this.userService.deletePasswordResetToken(resetTokenP);
+      } catch (e) {
+        throw Error('delete password didnt work');
+      }
       return { message: 'Your password was successfully changed!' };
     } catch (error) {
       throw error;

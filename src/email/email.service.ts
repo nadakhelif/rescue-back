@@ -21,10 +21,10 @@ export class EmailService {
     return response;
   }
 
-  async sendPasswordResetEmail(to: string, userId: string, resetToken: string) {
-    const resetLink = `https://example.com/reset-password/${userId}/${resetToken}`;
+  async sendPasswordResetEmail(to: string, userId: number, resetToken: string) {
+    const resetLink = `http://localhost:3000/auth/resetpassword/${userId}/${resetToken}`;
     const response = await this.mailService.sendMail({
-      to: to,
+      to: 'nadakhelif888@gmail.com',
       from: 'nadakhelif61@gmail.com',
       subject: 'Password reset request',
       text: 'Password reset request',

@@ -123,6 +123,7 @@ export class UserService extends CrudService<User> {
     try {
       const passwordReset = new PasswordReset();
       passwordReset.userId = id;
+      passwordReset.token = randomBytes(20).toString('hex');
       const savedToken = await this.passWordRestRepository.save(passwordReset);
       return savedToken;
     } catch (error) {
@@ -140,21 +141,24 @@ export class UserService extends CrudService<User> {
     const deletedToken = await this.passWordRestRepository.findOne({
       where: { token: token },
     });
-
-    await this.passWordRestRepository.delete(deletedToken.id);
+    try {
+      await this.passWordRestRepository.delete(deletedToken.id);
+    } catch (e) {
+      throw e;
+    }
     // .createQueryBuilder()
     // .delete()
     // .where('token = :token', { token })
     // .execute();
-    return deletedToken;
+    return { message: 'password reset deleted nice !' };
   }
 
   async changePassword(id: number, password: string) {
     const user = await this.userRepository.findOne({ where: { id: id } });
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
-    user.password = password;
+    user.password = await bcrypt.hash(password, 10);
     await this.userRepository.save(user);
   }
 }

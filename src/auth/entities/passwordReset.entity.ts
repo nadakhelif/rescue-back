@@ -9,9 +9,6 @@ export class PasswordReset {
   @Column()
   userId: number;
 
-  @Column({
-    unique: true,
-    nullable: false,
-  })
+  @Column()
   token: string;
 }
