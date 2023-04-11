@@ -1,5 +1,4 @@
 import {
-  OneToMany,
   Column,
   Entity,
   PrimaryGeneratedColumn,
@@ -26,9 +25,7 @@ export class User {
     unique: true,
   })
   email: string;
-  @Column({
-    length: 8,
-  })
+  @Column({ default: null })
   phoneNumber: string;
 
   @Column()
@@ -37,4 +34,12 @@ export class User {
 
   @DeleteDateColumn()
   deletedAt?: Date;
+
+  @Column({
+    default: null,
+  })
+  @Exclude()
+  verificationToken: string;
+  @Column({ default: false })
+  verified: boolean;
 }
