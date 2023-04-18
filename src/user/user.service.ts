@@ -146,10 +146,6 @@ export class UserService extends CrudService<User> {
     } catch (e) {
       throw e;
     }
-    // .createQueryBuilder()
-    // .delete()
-    // .where('token = :token', { token })
-    // .execute();
     return { message: 'password reset deleted nice !' };
   }
 
