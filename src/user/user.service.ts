@@ -16,6 +16,8 @@ import { PasswordReset } from '../auth/entities/passwordReset.entity';
 import { randomBytes } from 'crypto';
 import { EmailService } from '../email/email.service';
 
+import { Express } from 'express';
+
 @Injectable()
 export class UserService extends CrudService<User> {
   constructor(
@@ -156,5 +158,13 @@ export class UserService extends CrudService<User> {
     }
     user.password = await bcrypt.hash(password, 10);
     await this.userRepository.save(user);
+  }
+  async uploadProfilePic(id: number, file: Express.Multer.File) {
+    const user = await this.userRepository.findOne({ where: { id: id } });
+    if (!user) {
+      throw new Error(`User with id ${id} not found`);
+    }
+    user.profilePhoto = `/uploads/profileimages/${file.filename}`;
+    return await this.userRepository.save(user);
   }
 }

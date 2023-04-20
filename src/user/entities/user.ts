@@ -34,6 +34,8 @@ export class User {
 
   @DeleteDateColumn()
   deletedAt?: Date;
+  @Column({ nullable: true })
+  profilePhoto: string;
 
   @Column({
     default: null,
