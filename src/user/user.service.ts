@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -7,14 +8,17 @@ import { User } from './entities/user';
 import { JwtService } from '@nestjs/jwt';
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
+  forwardRef,
 } from '@nestjs/common';
 import { LoginUserDto } from './dto/login-user.dto';
 import { CrudService } from '../common/crud.service';
 import { PasswordReset } from '../auth/entities/passwordReset.entity';
 import { randomBytes } from 'crypto';
 import { EmailService } from '../email/email.service';
+import { AnnonceService } from 'src/annonce/annonce.service';
 
 @Injectable()
 export class UserService extends CrudService<User> {
@@ -23,11 +27,26 @@ export class UserService extends CrudService<User> {
     private userRepository: Repository<User>,
     @InjectRepository(PasswordReset)
     private passWordRestRepository: Repository<PasswordReset>,
+    @Inject(forwardRef(() => AnnonceService))
+    private annonceService: AnnonceService,
     private jwtService: JwtService,
     private emailService: EmailService,
   ) {
     super(userRepository);
   }
+  async getAll(): Promise<User[]> {
+    const qb = await this.userRepository.createQueryBuilder('user').select('*');
+    console.log(qb.getQuery());
+    return await qb.getMany();
+  }
+  /*async getUserById(id) {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .select('user.id, user.firstname, user.email')
+      .where('user.id=1');
+    console.log(user.getQuery());
+    return user.getMany();
+  }*/
   async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
     createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     const user = await this.userRepository.create({
@@ -161,4 +180,11 @@ export class UserService extends CrudService<User> {
     user.password = await bcrypt.hash(password, 10);
     await this.userRepository.save(user);
   }
+
+  /*async getAllFav(id) {
+    const user = this.userRepository.findOneById(id);
+    console.log(user);
+    console.log((await user).favoris);
+    return (await user).favoris;
+  }*/
 }

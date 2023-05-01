@@ -1,15 +1,22 @@
-import { Repository, UpdateResult } from 'typeorm';
-import { NotFoundException } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import { Repository } from 'typeorm';
+import { Inject, NotFoundException, forwardRef } from '@nestjs/common';
 import { HasIdInterface } from './hasId.interface';
+import { AnnonceService } from 'src/annonce/annonce.service';
+import { type } from 'os';
 
 export class CrudService<Entity extends HasIdInterface> {
   constructor(private repository: Repository<Entity>) {}
-  findAll(): Promise<Entity[]> {
-    return this.repository.find();
+  async createEntity(entitydto): Promise<Entity> {
+    return await this.repository.save(entitydto);
+  }
+  async findAll(): Promise<Entity[]> {
+    return await this.repository.find();
   }
 
-  async findOne(id): Promise<Entity> {
-    const Entity = await this.repository.findOne({ where: { id } });
+  async findOne(id: number): Promise<Entity> {
+    console.log(id);
+    const Entity = await this.repository.findOneById(id);
     if (!Entity) {
       throw new NotFoundException();
     }
@@ -18,16 +25,18 @@ export class CrudService<Entity extends HasIdInterface> {
 
   async update(id, updateDto) {
     const Entity = await this.repository.preload({ id, ...updateDto });
+    console.log(Entity);
     if (!Entity) {
-      throw new NotFoundException();
+      throw new NotFoundException('cette entité n existe pas');
     }
-    return this.repository.save(Entity);
+    return await this.repository.save(Entity);
   }
 
   async softremove(id) {
-    const Entity = await this.repository.findOne({ where: { id } });
+    console.log('my id', id, 'of type', typeof +id);
+    const Entity = await this.repository.findOneById(+id);
     if (!Entity) {
-      throw new NotFoundException();
+      throw new NotFoundException('the corresponding id does not exist');
     }
     return await this.repository.softRemove(Entity);
   }

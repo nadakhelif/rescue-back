@@ -1,4 +1,6 @@
-import { IsEmail, IsNotEmpty, IsPhoneNumber } from 'class-validator';
+/* eslint-disable prettier/prettier */
+import { IsEmail, IsNotEmpty } from 'class-validator';
+import { AnnonceEntity } from 'src/annonce/entities/annonce';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -17,4 +19,6 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   password: string;
+
+  favoris: AnnonceEntity[];
 }

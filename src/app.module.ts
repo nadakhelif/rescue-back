@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -8,7 +9,12 @@ import { CommonModule } from './common/common.module';
 import { ConfigModule } from '@nestjs/config';
 import { EmailModule } from './email/email.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { AnimalModule } from './animal/animal.module';
+import { AnnonceModule } from './annonce/annonce.module';
 import appConfig from './config/app.config';
+import { AnnonceEntity } from './annonce/entities/annonce';
+import { AnimalEntity } from './animal/entities/animal/animal';
+import { User } from './user/entities/user';
 
 @Module({
   imports: [
@@ -27,11 +33,12 @@ import appConfig from './config/app.config';
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: process.env.DB_HOST,
-      port: +process.env.DB_PORT,
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: 'emna042001',
+      database: 'rescue2',
+      entities: [AnnonceEntity, AnimalEntity, User],
       autoLoadEntities: true,
       synchronize: true,
     }),
@@ -39,6 +46,8 @@ import appConfig from './config/app.config';
     AuthModule,
     CommonModule,
     EmailModule,
+    AnimalModule,
+    AnnonceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
