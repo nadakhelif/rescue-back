@@ -81,7 +81,6 @@ export class UserController {
   }
   @Get('fav/:id')
   async getAllfav(@Param('id') id: number) {
-    console.log(id);
     return this.userService.getAllFav(id);
   }
 }

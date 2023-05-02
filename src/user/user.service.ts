@@ -168,13 +168,6 @@ export class UserService extends CrudService<User> {
     user.profilePhoto = `/uploads/profileimages/${file.filename}`;
     return await this.userRepository.save(user);
   }
-
-  async getAllFav(id) {
-    const user = this.userRepository.findOne({ where: { id: id } });
-    console.log(user);
-    console.log((await user).favorites);
-    return (await user).favorites;
-  }
   async findOne(id) {
     const user = await this.userRepository.findOne({
       where: { id },
@@ -190,5 +183,12 @@ export class UserService extends CrudService<User> {
     }
 
     return user;
+  }
+  async getAllFav(id) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['favorites'],
+    });
+    return user.favorites;
   }
 }
