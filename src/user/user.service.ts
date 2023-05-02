@@ -30,6 +30,7 @@ export class UserService extends CrudService<User> {
   ) {
     super(userRepository);
   }
+
   async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
     createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     const user = await this.userRepository.create({
@@ -175,10 +176,19 @@ export class UserService extends CrudService<User> {
     return (await user).favorites;
   }
   async findOne(id) {
-    const Entity = await this.userRepository.findOne({ where: { id: id } });
-    if (!Entity) {
-      throw new NotFoundException();
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['favorites'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
-    return Entity;
+
+    if (!user.favorites) {
+      user.favorites = [];
+    }
+
+    return user;
   }
 }

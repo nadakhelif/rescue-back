@@ -32,6 +32,6 @@ export class Annonce extends TimeEntities {
   @ManyToMany(() => User, (user) => user.favorites, { cascade: true })
   favoritedBy: User[];
 
-  @ManyToOne(() => User, (user) => user.publishedAnnonces)
+  @ManyToOne(() => User, (user) => user.publishedAnnonces, { cascade: true })
   publisher: User;
 }

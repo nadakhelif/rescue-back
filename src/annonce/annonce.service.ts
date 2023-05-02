@@ -50,6 +50,10 @@ export class AnnonceService extends CrudService<Annonce> {
       return await this.annonceRepository.save(newAnnonce);
     }
   }
+  async findAll() {
+    return await this.annonceRepository.find({ relations: ['publisher'] });
+  }
+
   async addToFavorites(userId: number, annonceId: number) {
     const user = await this.userService.findOne(userId);
 
@@ -64,11 +68,15 @@ export class AnnonceService extends CrudService<Annonce> {
     if (!annonce) {
       throw new NotFoundException('Annonce not found');
     }
-    if (!user.favorites) {
-      user.favorites = [];
-    }
 
-    user.favorites.push(annonce);
+    // Check if the annonce is already in the favorites array
+    const existingFavorite = user.favorites.find(
+      (favorite) => favorite.id === annonce.id,
+    );
+
+    if (!existingFavorite) {
+      user.favorites.push(annonce);
+    }
 
     return await this.userRepository.save(user);
   }
