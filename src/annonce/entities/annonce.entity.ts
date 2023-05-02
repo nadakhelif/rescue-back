@@ -7,6 +7,7 @@ import {
   Entity,
   JoinColumn,
   ManyToMany,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -28,9 +29,9 @@ export class Annonce extends TimeEntities {
   @OneToOne(() => Animal, { eager: true, cascade: true })
   @JoinColumn()
   animal: Animal;
-  @ManyToMany(() => User, (user) => user.favorites)
+  @ManyToMany(() => User, (user) => user.favorites, { cascade: true })
   favoritedBy: User[];
 
-  @Column()
-  userId: number;
+  @ManyToOne(() => User, (user) => user.publishedAnnonces)
+  publisher: User;
 }

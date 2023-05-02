@@ -5,6 +5,7 @@ import {
   DeleteDateColumn,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 
 import { Exclude } from 'class-transformer';
@@ -60,4 +61,6 @@ export class User {
     },
   })
   favorites: Annonce[];
+  @OneToMany(() => Annonce, (annonce) => annonce.publisher)
+  publishedAnnonces: Annonce[];
 }

@@ -5,9 +5,10 @@ import { AnimalModule } from '../animal/animal.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Annonce } from './entities/annonce.entity';
+import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Annonce]), AnimalModule],
+  imports: [TypeOrmModule.forFeature([Annonce]), AnimalModule, UserModule],
   controllers: [AnnonceController],
   providers: [AnnonceService],
 })
