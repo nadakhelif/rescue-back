@@ -92,14 +92,10 @@ export class AnnonceService extends CrudService<Annonce> {
     );
   }
   async findAllAvailable(): Promise<Annonce[]> {
-    const statusQuery = AnnonceStateEnum.AVAILABLE;
-    const annonces = await this.annonceRepository.find({
-      where: {
-        state: statusQuery,
-      },
-    });
-
-    return annonces;
+    return await this.annonceRepository
+      .createQueryBuilder('annonce')
+      .where('annonce.state = "available"')
+      .getMany();
   }
 
   async getAllNOTAvailable(): Promise<Annonce[]> {
