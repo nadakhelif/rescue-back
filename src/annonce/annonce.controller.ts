@@ -47,15 +47,15 @@ export class AnnonceController {
   remove(@Param('id') id: string) {
     return this.annonceService.softremove(+id);
   }
-  @Get('available')
+  @Get('/available/yey')
   async getAllAvailable() {
-    return await this.annonceService.findAllAvailable();
+    return this.annonceService.findAllAvailable();
   }
-  @Get('notavailable')
+  @Get('/not/not')
   async getAllNotAvailable() {
-    return await this.annonceService.getAllNOTAvailable();
+    return this.annonceService.getAllNOTAvailable();
   }
-  @Patch(':id')
+  @Patch('not/:id')
   async updateState(@Param('id') id) {
     return await this.annonceService.setToNotAvailable(id);
   }
