@@ -44,6 +44,7 @@ export class AnnonceService extends CrudService<Annonce> {
       }
       const newAnnonce = await this.annonceRepository.create({
         ...createAnnonceDto,
+        state: AnnonceStateEnum.AVAILABLE,
         publisher: publisher,
         animal: animalId,
       });
@@ -80,24 +81,6 @@ export class AnnonceService extends CrudService<Annonce> {
 
     return await this.userRepository.save(user);
   }
-
-  // async addToFavoris(annonceId, userId) {
-  //   /*const annonce = await this.annonceRepository
-  //     .createQueryBuilder('annonce')
-  //     .select('*')
-  //     .where('annonce.id = :id', { id: +annonceId });
-  //   console.log(typeof +annonceId);
-  //   console.log(annonce.getQuery());
-  //   console.log(await annonce.getOne());*/
-  //   const annonce = await this.annonceRepository.findOne({
-  //     where: { id: annonceId },
-  //   });
-  //   console.log(annonce);
-  //   const user = await this.userService.findOne(userId);
-  //   console.log(user);
-  //   //annonce.users.push(user);
-  //   return 'added successfuly';
-  // }
   async deleteFromFav(annonceId, userId) {
     const user = await this.userService.findOne(userId);
     const annonce = await this.annonceRepository.findOne(annonceId);
@@ -108,17 +91,23 @@ export class AnnonceService extends CrudService<Annonce> {
       (user) => user.id !== userId,
     );
   }
-  async getAllAvailable(): Promise<Annonce[]> {
-    return await this.annonceRepository
-      .createQueryBuilder('annonce')
-      .where('annonce.state = "available"')
-      .getMany();
+  async findAllAvailable(): Promise<Annonce[]> {
+    const statusQuery = AnnonceStateEnum.AVAILABLE;
+    const annonces = await this.annonceRepository.find({
+      where: {
+        state: statusQuery,
+      },
+    });
+
+    return annonces;
   }
+
   async getAllNOTAvailable(): Promise<Annonce[]> {
-    return await this.annonceRepository
-      .createQueryBuilder('annonce')
-      .where('annonce.state = "not-available"')
-      .getMany();
+    return await this.annonceRepository.find({
+      where: {
+        state: AnnonceStateEnum.NOTAVAILABE,
+      },
+    });
   }
   async getAll(): Promise<Annonce[]> {
     return await this.annonceRepository.createQueryBuilder('annonce').getMany();
