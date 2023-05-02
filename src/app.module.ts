@@ -8,6 +8,8 @@ import { CommonModule } from './common/common.module';
 import { ConfigModule } from '@nestjs/config';
 import { EmailModule } from './email/email.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { AnimalModule } from './animal/animal.module';
+import { AnnonceModule } from './annonce/annonce.module';
 import appConfig from './config/app.config';
 
 @Module({
@@ -39,6 +41,8 @@ import appConfig from './config/app.config';
     AuthModule,
     CommonModule,
     EmailModule,
+    AnimalModule,
+    AnnonceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -16,6 +16,8 @@ import { PasswordReset } from '../auth/entities/passwordReset.entity';
 import { randomBytes } from 'crypto';
 import { EmailService } from '../email/email.service';
 
+import { Express } from 'express';
+
 @Injectable()
 export class UserService extends CrudService<User> {
   constructor(
@@ -28,6 +30,7 @@ export class UserService extends CrudService<User> {
   ) {
     super(userRepository);
   }
+
   async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
     createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     const user = await this.userRepository.create({
@@ -146,10 +149,6 @@ export class UserService extends CrudService<User> {
     } catch (e) {
       throw e;
     }
-    // .createQueryBuilder()
-    // .delete()
-    // .where('token = :token', { token })
-    // .execute();
     return { message: 'password reset deleted nice !' };
   }
 
@@ -160,5 +159,36 @@ export class UserService extends CrudService<User> {
     }
     user.password = await bcrypt.hash(password, 10);
     await this.userRepository.save(user);
+  }
+  async uploadProfilePic(id: number, file: Express.Multer.File) {
+    const user = await this.userRepository.findOne({ where: { id: id } });
+    if (!user) {
+      throw new Error(`User with id ${id} not found`);
+    }
+    user.profilePhoto = `/uploads/profileimages/${file.filename}`;
+    return await this.userRepository.save(user);
+  }
+  async findOne(id) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['favorites'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (!user.favorites) {
+      user.favorites = [];
+    }
+
+    return user;
+  }
+  async getAllFav(id) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['favorites'],
+    });
+    return user.favorites;
   }
 }
