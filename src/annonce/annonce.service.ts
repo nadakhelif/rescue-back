@@ -20,7 +20,6 @@ export class AnnonceService extends CrudService<Annonce> {
 
   async create(createAnnonceDto: CreateAnnonceDto) {
     if (createAnnonceDto.animalId) {
-      //this.animalService = new AnimalService(this.animalRepository);
       const animalId = await this.animalService.findOne(
         createAnnonceDto.animalId,
       );
@@ -30,11 +29,11 @@ export class AnnonceService extends CrudService<Annonce> {
           'There is no animal with the corresponding id',
         );
       }
+      const newAnnonce = await this.annonceRepository.create(createAnnonceDto);
+      newAnnonce.animal = await this.animalService.findOne(
+        createAnnonceDto.animalId,
+      );
+      return await this.annonceRepository.save(newAnnonce);
     }
-    const newAnnonce = this.annonceRepository.create(createAnnonceDto);
-    newAnnonce.animal = await this.animalService.findOne(
-      createAnnonceDto.animalId,
-    );
-    return await this.annonceRepository.save(createAnnonceDto);
   }
 }

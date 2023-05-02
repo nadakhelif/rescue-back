@@ -15,7 +15,7 @@ export class AnimalService extends CrudService<Animal> {
     super(animalRepository);
   }
   async create(createAnimalDto: CreateAnimalDto) {
-    let animal = this.animalRepository.create(createAnimalDto);
+    let animal = await this.animalRepository.create(createAnimalDto);
     animal = await this.animalRepository.save(createAnimalDto);
     return animal;
   }

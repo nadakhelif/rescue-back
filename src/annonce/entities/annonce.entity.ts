@@ -6,9 +6,11 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { User } from '../../user/entities/user';
 @Entity('annonce')
 export class Annonce extends TimeEntities {
   @PrimaryGeneratedColumn()
@@ -23,7 +25,12 @@ export class Annonce extends TimeEntities {
     default: AnnonceStateEnum.AVAILABLE,
   })
   state: AnnonceStateEnum;
-  @OneToOne(() => Animal)
+  @OneToOne(() => Animal, { eager: true, cascade: true })
   @JoinColumn()
   animal: Animal;
+  @ManyToMany(() => User, (user) => user.favorites)
+  favoritedBy: User[];
+
+  @Column()
+  userId: number;
 }
