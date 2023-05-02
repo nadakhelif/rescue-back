@@ -6,9 +6,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Annonce } from './entities/annonce.entity';
 import { UserModule } from '../user/user.module';
+import { User } from '../user/entities/user';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Annonce]), AnimalModule, UserModule],
+  imports: [
+    TypeOrmModule.forFeature([Annonce]),
+    TypeOrmModule.forFeature([User]),
+    AnimalModule,
+    UserModule,
+  ],
   controllers: [AnnonceController],
   providers: [AnnonceService],
 })

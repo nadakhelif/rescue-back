@@ -7,6 +7,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { PasswordReset } from '../auth/entities/passwordReset.entity';
 import { EmailModule } from '../email/email.module';
+import { AnnonceModule } from '../annonce/annonce.module';
 
 const SECRET = 'secret';
 

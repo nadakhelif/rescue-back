@@ -167,4 +167,18 @@ export class UserService extends CrudService<User> {
     user.profilePhoto = `/uploads/profileimages/${file.filename}`;
     return await this.userRepository.save(user);
   }
+
+  async getAllFav(id) {
+    const user = this.userRepository.findOne({ where: { id: id } });
+    console.log(user);
+    console.log((await user).favorites);
+    return (await user).favorites;
+  }
+  async findOne(id) {
+    const Entity = await this.userRepository.findOne({ where: { id: id } });
+    if (!Entity) {
+      throw new NotFoundException();
+    }
+    return Entity;
+  }
 }

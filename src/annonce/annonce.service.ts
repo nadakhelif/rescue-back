@@ -8,12 +8,15 @@ import { AnimalService } from '../animal/animal.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from '../user/user.service';
 import { AnnonceStateEnum } from '../enums/annonceStateEnum';
+import { User } from '../user/entities/user';
 
 @Injectable()
 export class AnnonceService extends CrudService<Annonce> {
   constructor(
     @InjectRepository(Annonce)
     private annonceRepository: Repository<Annonce>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
     private userService: UserService,
     private animalService: AnimalService,
   ) {
@@ -47,24 +50,46 @@ export class AnnonceService extends CrudService<Annonce> {
       return await this.annonceRepository.save(newAnnonce);
     }
   }
+  async addToFavorites(userId: number, annonceId: number) {
+    const user = await this.userService.findOne(userId);
 
-  async addToFavoris(annonceId, userId) {
-    /*const annonce = await this.annonceRepository
-      .createQueryBuilder('annonce')
-      .select('*')
-      .where('annonce.id = :id', { id: +annonceId });
-    console.log(typeof +annonceId);
-    console.log(annonce.getQuery());
-    console.log(await annonce.getOne());*/
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     const annonce = await this.annonceRepository.findOne({
       where: { id: annonceId },
     });
-    console.log(annonce);
-    const user = await this.userService.findOne(userId);
-    console.log(user);
-    //annonce.users.push(user);
-    return 'added successfuly';
+
+    if (!annonce) {
+      throw new NotFoundException('Annonce not found');
+    }
+    if (!user.favorites) {
+      user.favorites = [];
+    }
+
+    user.favorites.push(annonce);
+
+    return await this.userRepository.save(user);
   }
+
+  // async addToFavoris(annonceId, userId) {
+  //   /*const annonce = await this.annonceRepository
+  //     .createQueryBuilder('annonce')
+  //     .select('*')
+  //     .where('annonce.id = :id', { id: +annonceId });
+  //   console.log(typeof +annonceId);
+  //   console.log(annonce.getQuery());
+  //   console.log(await annonce.getOne());*/
+  //   const annonce = await this.annonceRepository.findOne({
+  //     where: { id: annonceId },
+  //   });
+  //   console.log(annonce);
+  //   const user = await this.userService.findOne(userId);
+  //   console.log(user);
+  //   //annonce.users.push(user);
+  //   return 'added successfuly';
+  // }
   async deleteFromFav(annonceId, userId) {
     const user = await this.userService.findOne(userId);
     const annonce = await this.annonceRepository.findOne(annonceId);

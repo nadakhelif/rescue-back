@@ -19,6 +19,14 @@ export class AnnonceController {
   create(@Body() createAnnonceDto: CreateAnnonceDto) {
     return this.annonceService.create(createAnnonceDto);
   }
+  @Post('fav/:userId/:annonceId')
+  async addFavorite(
+    @Param('userId') userId: number,
+    @Param('annonceId') annonceId: number,
+  ) {
+    console.log(userId, annonceId);
+    return this.annonceService.addToFavorites(userId, annonceId);
+  }
 
   @Get()
   findAll() {

@@ -79,4 +79,9 @@ export class UserController {
   remove(@Param('id') id: string) {
     return this.userService.softremove(+id);
   }
+  @Get('fav/:id')
+  async getAllfav(@Param('id') id: number) {
+    console.log(id);
+    return this.userService.getAllFav(id);
+  }
 }
