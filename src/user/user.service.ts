@@ -100,7 +100,7 @@ export class UserService extends CrudService<User> {
       }
     }
     await this.userRepository.update({ id }, updateUserDto);
-    return { message: 'update success !' };
+    return user;
   }
   async changeVerifyToTrue(id: number) {
     try {
