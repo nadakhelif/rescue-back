@@ -10,7 +10,11 @@ import { EmailModule } from './email/email.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { AnimalModule } from './animal/animal.module';
 import { AnnonceModule } from './annonce/annonce.module';
+import { ConversationModule } from './conversation/conversation.module';
+import { MessageModule } from './message/message.module';
 import appConfig from './config/app.config';
+import {EventEmitterModule} from "@nestjs/event-emitter";
+import {GatewayModule} from "./ChatGateway/gateway.module";
 
 @Module({
   imports: [
@@ -27,7 +31,23 @@ import appConfig from './config/app.config';
       isGlobal: true,
       load: [appConfig],
     }),
-    TypeOrmModule.forRoot({
+    EventEmitterModule.forRoot({
+      // set this to true to use wildcards
+      wildcard: false,
+      // the delimiter used to segment namespaces
+      delimiter: '.',
+      // set this to true if you want to emit the newListener event
+      newListener: false,
+      // set this to true if you want to emit the removeListener event
+      removeListener: false,
+      // the maximum amount of listeners that can be assigned to an event
+      maxListeners: 10,
+      // show event name in memory leak message when more than maximum amount of listeners is assigned
+      verboseMemoryLeak: false,
+      // disable throwing uncaughtException if an error event is emitted and it has no listeners
+      ignoreErrors: false,
+    }),
+     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST,
       port: +process.env.DB_PORT,
@@ -43,6 +63,10 @@ import appConfig from './config/app.config';
     EmailModule,
     AnimalModule,
     AnnonceModule,
+    ConversationModule,
+    MessageModule,
+    EventEmitterModule.forRoot(),
+    GatewayModule,
   ],
   controllers: [AppController],
   providers: [AppService],

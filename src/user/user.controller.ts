@@ -83,4 +83,9 @@ export class UserController {
   async getAllfav(@Param('id') id: number) {
     return this.userService.getAllFav(id);
   }
+
+  @Get('test')
+  findByName(@Param() username: string) {
+    console.log(this.userService.findUser(username));
+  }
 }

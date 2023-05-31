@@ -6,10 +6,12 @@ import {
   ManyToMany,
   JoinTable,
   OneToMany,
+  OneToOne,
+  ManyToOne,
 } from 'typeorm';
-
 import { Exclude } from 'class-transformer';
 import { Annonce } from '../../annonce/entities/annonce.entity';
+import { Message } from 'src/message/entities/message.entity';
 
 @Entity('user')
 export class User {
@@ -38,6 +40,7 @@ export class User {
 
   @DeleteDateColumn()
   deletedAt?: Date;
+
   @Column({ nullable: true })
   profilePhoto: string;
 
@@ -48,6 +51,7 @@ export class User {
   verificationToken: string;
   @Column({ default: false })
   verified: boolean;
+
   @ManyToMany(() => Annonce, (annonce) => annonce.favoritedBy)
   @JoinTable({
     name: 'favorite',
@@ -61,6 +65,10 @@ export class User {
     },
   })
   favorites: Annonce[];
+
   @OneToMany(() => Annonce, (annonce) => annonce.publisher)
   publishedAnnonces: Annonce[];
+
+  @OneToMany(() => Message, (messages) => messages.author)
+  messages: Message[];
 }

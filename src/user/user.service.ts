@@ -2,7 +2,7 @@ import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { User } from './entities/user';
 import { JwtService } from '@nestjs/jwt';
 import {
@@ -190,5 +190,11 @@ export class UserService extends CrudService<User> {
       relations: ['favorites'],
     });
     return user.favorites;
+  }
+  async findUser(email: string): Promise<User> {
+    const options: FindOneOptions<User> = {
+      where: { email },
+    };
+    return await this.userRepository.findOne(options);
   }
 }
