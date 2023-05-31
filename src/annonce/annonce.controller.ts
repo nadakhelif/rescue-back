@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { AnnonceService } from './annonce.service';
 import { CreateAnnonceDto } from './dto/create-annonce.dto';
@@ -31,6 +32,13 @@ export class AnnonceController {
   @Get()
   findAll() {
     return this.annonceService.findAll();
+  }
+  @Get('page')
+  async paginer(@Query() params) {
+    console.log(params);
+    const { page, limit } = params;
+    const skip = (page - 1) * limit;
+    return await this.annonceService.paginer(skip, limit);
   }
 
   @Get(':id')

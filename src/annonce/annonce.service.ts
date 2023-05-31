@@ -54,6 +54,10 @@ export class AnnonceService extends CrudService<Annonce> {
   async findAll() {
     return await this.annonceRepository.find({ relations: ['publisher'] });
   }
+  async paginer(skip: number, limit: number) {
+    const take = limit;
+    return await this.annonceRepository.find({ skip, take });
+  }
 
   async addToFavorites(userId: number, annonceId: number) {
     const user = await this.userService.findOne(userId);
