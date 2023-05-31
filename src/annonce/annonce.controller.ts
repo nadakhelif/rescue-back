@@ -11,6 +11,9 @@ import {
 import { AnnonceService } from './annonce.service';
 import { CreateAnnonceDto } from './dto/create-annonce.dto';
 import { UpdateAnnonceDto } from './dto/update-annonce.dto';
+import { AnnonceCategoryEnum } from '../enums/annonceCategoryEnum';
+import { AnnonceStateEnum } from '../enums/annonceStateEnum';
+import { AnimalSexeEnum } from '../enums/animalSexeEnum';
 
 @Controller('annonce')
 export class AnnonceController {
@@ -32,6 +35,22 @@ export class AnnonceController {
   @Get()
   findAll() {
     return this.annonceService.findAll();
+  }
+  @Get('search')
+  searchByCriteria(
+    @Query('minAge') minAge: number,
+    @Query('maxAge') maxAge: number,
+    @Query('category') category: AnnonceCategoryEnum,
+    @Query('sex') sex: AnimalSexeEnum,
+    @Query('available') available: AnnonceStateEnum,
+  ) {
+    return this.annonceService.searchByCriteria(
+      minAge,
+      maxAge,
+      category,
+      sex,
+      available,
+    );
   }
   @Get('page')
   async paginer(@Query() params) {
