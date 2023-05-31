@@ -1,4 +1,4 @@
-import { TimeEntities } from 'src/Generic/timeEntity';
+import { TimeEntities } from 'src/generic/timeEntity';
 import { Animal } from 'src/animal/entities/animal';
 import { AnnonceStateEnum } from 'src/enums/annonceStateEnum';
 

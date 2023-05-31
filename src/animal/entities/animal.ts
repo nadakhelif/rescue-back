@@ -1,11 +1,11 @@
-import { TimeEntities } from 'src/generic/timeEntity';
-import { Annonce } from 'src/annonce/entities/annonce.entity';
+// import { TimeEntities } from 'src/generic/timeEntity';
+
 import { AnimalSexeEnum } from 'src/enums/animalSexeEnum';
 import { AnimalStateEnum } from 'src/enums/animalStateEnum';
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('animal')
-export class Animal extends TimeEntities {
+@Entity('animal') //extends TimeEntities
+export class Animal {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()

@@ -10,6 +10,7 @@ import { EmailModule } from './email/email.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { AnimalModule } from './animal/animal.module';
 import { AnnonceModule } from './annonce/annonce.module';
+
 import appConfig from './config/app.config';
 
 @Module({

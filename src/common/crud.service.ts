@@ -21,7 +21,8 @@ export class CrudService<Entity extends HasIdInterface> {
     if (!Entity) {
       throw new NotFoundException();
     }
-    return this.repository.save(Entity);
+    await this.repository.save(Entity);
+    return { message: 'update success ' };
   }
 
   async softremove(id) {

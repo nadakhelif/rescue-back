@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
 import { AnimalService } from '../animal/animal.service';
-import { AnnonceService } from '../annonce/annonce.service';
+
 import { Animal } from '../animal/entities/animal';
 import {
   randAvatar,
@@ -16,9 +16,9 @@ import {
   randSuperhero,
 } from '@ngneat/falso';
 import { AnimalSexeEnum } from '../enums/animalSexeEnum';
-import { AnnonceCategoryEnum } from '../enums/annonceCategoryEnum';
-
 import { CreateAnnonceDto } from '../annonce/dto/create-annonce.dto';
+import { AnnonceCategoryEnum } from '../enums/annonceCategoryEnum';
+import { AnnonceService } from '../annonce/annonce.service';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -48,3 +48,4 @@ async function bootstrap() {
     await annonceService.create(annonce);
   }
 }
+bootstrap();
