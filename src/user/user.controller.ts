@@ -51,7 +51,7 @@ export class UserController {
   }
 
   @Post(':id/profile-photo')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file', storage))
   async uploadProfilePhoto(
     @Param('id') id: number,
@@ -61,7 +61,7 @@ export class UserController {
   }
 
   @Get('profile-image/:imagename')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   findProfileImage(@Param('imagename') imagename, @Res() res) {
     return of(
       res.sendFile(join(process.cwd(), 'uploads/profileimages/' + imagename)),
@@ -74,12 +74,13 @@ export class UserController {
   }
 
   @Get(':id')
+  // @UseGuards(JwtAuthGuard)
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
