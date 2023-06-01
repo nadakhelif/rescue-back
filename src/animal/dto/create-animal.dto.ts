@@ -4,7 +4,7 @@ import { IsNotEmpty } from 'class-validator';
 export class CreateAnimalDto {
   @IsNotEmpty()
   name: string;
-  photo: string;
+
   @IsNotEmpty()
   race: string;
   @IsNotEmpty()

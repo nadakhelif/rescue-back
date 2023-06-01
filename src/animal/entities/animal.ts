@@ -12,7 +12,7 @@ export class Animal {
   name: string;
   @Column()
   age: number;
-  @Column()
+  @Column({ default: null })
   photo: string;
   @Column()
   race: string;
