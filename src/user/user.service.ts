@@ -166,7 +166,7 @@ export class UserService extends CrudService<User> {
     if (!user) {
       throw new Error(`User with id ${id} not found`);
     }
-    user.profilePhoto = `/uploads/profileimages/${file.filename}`;
+    user.profilePhoto = `${file.filename}`;
     return await this.userRepository.save(user);
   }
   async findOne(id) {

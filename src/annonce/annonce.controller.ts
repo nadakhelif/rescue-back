@@ -14,6 +14,7 @@ import { UpdateAnnonceDto } from './dto/update-annonce.dto';
 import { AnnonceCategoryEnum } from '../enums/annonceCategoryEnum';
 import { AnnonceStateEnum } from '../enums/annonceStateEnum';
 import { AnimalSexeEnum } from '../enums/animalSexeEnum';
+import { diskStorage } from 'multer';
 
 @Controller('annonce')
 export class AnnonceController {

@@ -53,6 +53,7 @@ export class AnnonceService extends CrudService<Annonce> {
       return await this.annonceRepository.save(newAnnonce);
     }
   }
+
   async findAll() {
     return await this.annonceRepository.find({ relations: ['publisher'] });
   }

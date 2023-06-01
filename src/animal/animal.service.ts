@@ -5,6 +5,7 @@ import { CrudService } from 'src/common/crud.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateAnimalDto } from './dto/create-animal.dto';
+import { Express } from 'express';
 
 @Injectable()
 export class AnimalService extends CrudService<Animal> {
@@ -16,8 +17,29 @@ export class AnimalService extends CrudService<Animal> {
   }
   async create(createAnimalDto: CreateAnimalDto) {
     let animal = await this.animalRepository.create(createAnimalDto);
+
     animal = await this.animalRepository.save(createAnimalDto);
+
     return animal;
+  }
+  // async createAnimalWithImage(
+  //   createAnimalDto: CreateAnimalDto,
+  //   file: Express.Multer.File,
+  // ) {
+  //   console.log(file);
+  //   const animal = await this.create(createAnimalDto);
+  //   const id = animal.id;
+  //   await this.uploadAnimalPic(id, file);
+  //   const createdAnimal = await this.create(createAnimalDto);
+  // }
+  async uploadAnimalPic(id: number, file: Express.Multer.File) {
+    const animal = await this.animalRepository.findOne({ where: { id: id } });
+    if (!animal) {
+      throw new Error(`annonce with id ${id} not found`);
+    }
+    animal.photo = `/uploads/animalImages/${file.filename}`;
+    console.log(animal);
+    return await this.animalRepository.save(animal);
   }
   async filterByage(min, max): Promise<Animal[]> {
     const qb = this.animalRepository.createQueryBuilder('animal');
