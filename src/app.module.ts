@@ -15,6 +15,7 @@ import { MessageModule } from './message/message.module';
 import appConfig from './config/app.config';
 import {EventEmitterModule} from "@nestjs/event-emitter";
 import {GatewayModule} from "./ChatGateway/gateway.module";
+import {NotifModule} from "./NotifGateway/notif.module";
 
 @Module({
   imports: [
@@ -65,8 +66,8 @@ import {GatewayModule} from "./ChatGateway/gateway.module";
     AnnonceModule,
     ConversationModule,
     MessageModule,
-    EventEmitterModule.forRoot(),
-    GatewayModule,
+    NotifModule,
+    // GatewayModule,
   ],
   controllers: [AppController],
   providers: [AppService],

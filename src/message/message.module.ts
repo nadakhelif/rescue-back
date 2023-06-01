@@ -5,7 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Message } from './entities/message.entity';
 import { ConversationModule } from 'src/conversation/conversation.module';
 import { Conversation } from 'src/conversation/entities/conversation.entity';
-import {EventEmitterModule} from "@nestjs/event-emitter";
+import {ChatGateway} from "../ChatGateway/gateway";
+import {UserService} from "../user/user.service";
+import {UserModule} from "../user/user.module";
 
 @Module({
   controllers: [MessageController],
@@ -13,6 +15,8 @@ import {EventEmitterModule} from "@nestjs/event-emitter";
   imports: [
     TypeOrmModule.forFeature([Message, Conversation]),
     forwardRef(() => ConversationModule),
+      UserModule
+
   ],
   exports: [MessageService],
 })

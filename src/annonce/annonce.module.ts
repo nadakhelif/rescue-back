@@ -17,5 +17,6 @@ import { User } from '../user/entities/user';
   ],
   controllers: [AnnonceController],
   providers: [AnnonceService],
+  exports: [AnnonceService],
 })
 export class AnnonceModule {}

@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAnnonceDto } from './dto/create-annonce.dto';
-import { UpdateAnnonceDto } from './dto/update-annonce.dto';
 import { CrudService } from '../common/crud.service';
 import { Repository } from 'typeorm';
 import { Annonce } from './entities/annonce.entity';

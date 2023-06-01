@@ -3,20 +3,16 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   ParseIntPipe,
-  UseGuards, Inject,
+  UseGuards,
 } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
 import { AuthUser } from 'src/decorators/authUser.decorator';
 import { User } from 'src/user/entities/user';
 import { JwtAuthGuard } from 'src/auth/Guards/jwt-auth.guard';
 import {EventEmitter2, OnEvent} from '@nestjs/event-emitter';
-import {CreateMessageResponse} from "../generic/types/type";
 
 
 @UseGuards(JwtAuthGuard)

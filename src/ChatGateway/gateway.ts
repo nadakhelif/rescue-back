@@ -1,23 +1,23 @@
-import {WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer, ConnectedSocket} from '@nestjs/websockets';
-import {MessageService} from "../message/message.service";
+import {
+  WebSocketGateway,
+  SubscribeMessage,
+  MessageBody,
+  WebSocketServer,
+  ConnectedSocket,
+  OnGatewayConnection, OnGatewayDisconnect
+} from '@nestjs/websockets';
 import { CreateMessageResponse} from "../generic/types/type";
-import {ConversationService} from "../conversation/conversation.service";
-import { Server } from 'socket.io';
-import {UserService} from "../user/user.service";
+import {Server} from 'socket.io';
 import {AuthenticatedSocket} from "./AuthenticatedSocket";
 import { OnEvent } from '@nestjs/event-emitter';
-import {IGatewaySessionManager} from "./gateway-session-manager";
-import {Injectable} from "@nestjs/common";
+import {GatewaySessionManager } from "./gateway-session-manager";
 
 
 @WebSocketGateway( {cors: {
   origin: '*'
   }})
-export class ChatGateway {
-  constructor(private readonly MessageService: MessageService,
-              private readonly ConversationService : ConversationService,
-              private readonly userService : UserService,
-              private readonly sessions : IGatewaySessionManager) {}
+export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
+  constructor(private readonly sessions : GatewaySessionManager) {}
 
   @WebSocketServer()
   server: Server;
@@ -51,29 +51,13 @@ export class ChatGateway {
     console.log(client.rooms);
     client.to(`conversation-${data.conversationId}`).emit('userJoin');
   }
+
   @OnEvent('message.create')
   handleMessage(payload: CreateMessageResponse) {
     console.log('Inside message.create');
     console.log('payloaaaadddd : ', payload);
   }
-  //
-  // @SubscribeMessage('onConversationLeave')
-  // onConversationLeave(
-  //     @MessageBody() data: any,
-  //     @ConnectedSocket() client: AuthenticatedSocket,
-  // ) {
-  //   console.log('onConversationLeave');
-  //   client.leave(`conversation-${data.conversationId}`);
-  //   console.log(client.rooms);
-  //   client.to(`conversation-${data.conversationId}`).emit('userLeave');
-  // }
 
-
-  // @OnEvent('message.create')
-  // handleMessage(payload: CreateMessageResponse) {
-  //   console.log('Inside message.create');
-  //   console.log('payloaaaadddd', payload);
-  // }
 
   // @OnEvent('message.create')
   // handleMessageCreateEvent(payload: CreateMessageResponse) {
@@ -96,6 +80,8 @@ export class ChatGateway {
   // }
 
 
+
+
   // @OnEvent('message.delete')
   // async handleMessageDelete(payload) {
   //   console.log('Inside message.delete');
@@ -110,6 +96,19 @@ export class ChatGateway {
   //           ? this.sessions.getUserSocket(recipient.id)
   //           : this.sessions.getUserSocket(creator.id);
   //   if (recipientSocket) recipientSocket.emit('onMessageDelete', payload);
+  // }
+
+
+  //
+  // @SubscribeMessage('onConversationLeave')
+  // onConversationLeave(
+  //     @MessageBody() data: any,
+  //     @ConnectedSocket() client: AuthenticatedSocket,
+  // ) {
+  //   console.log('onConversationLeave');
+  //   client.leave(`conversation-${data.conversationId}`);
+  //   console.log(client.rooms);
+  //   client.to(`conversation-${data.conversationId}`).emit('userLeave');
   // }
 
 

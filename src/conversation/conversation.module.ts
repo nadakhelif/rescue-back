@@ -6,7 +6,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessageModule } from 'src/message/message.module';
 import { UserModule } from 'src/user/user.module';
 import { Message } from 'src/message/entities/message.entity';
-import { UserService } from 'src/user/user.service';
 
 @Module({
   controllers: [ConversationController],
