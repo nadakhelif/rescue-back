@@ -9,6 +9,7 @@ import {
   UploadedFile,
   UseInterceptors,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -20,6 +21,8 @@ import { v4 as uuidv4 } from 'uuid';
 import path = require('path');
 import { join } from 'path';
 import { of } from 'rxjs';
+import { JwtAuthGuard } from './guard/jwt.auth.guards';
+
 export const storage = {
   storage: diskStorage({
     destination: './uploads/profileimages',
@@ -41,11 +44,14 @@ export class UserController {
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
+
   @Post('login')
   login(@Body() loginUserDto: LoginUserDto) {
     return this.userService.login(loginUserDto);
   }
+
   @Post(':id/profile-photo')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file', storage))
   async uploadProfilePhoto(
     @Param('id') id: number,
@@ -53,7 +59,9 @@ export class UserController {
   ) {
     return this.userService.uploadProfilePic(id, file);
   }
+
   @Get('profile-image/:imagename')
+  @UseGuards(JwtAuthGuard)
   findProfileImage(@Param('imagename') imagename, @Res() res) {
     return of(
       res.sendFile(join(process.cwd(), 'uploads/profileimages/' + imagename)),
@@ -71,6 +79,7 @@ export class UserController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
@@ -79,7 +88,9 @@ export class UserController {
   remove(@Param('id') id: string) {
     return this.userService.softremove(+id);
   }
+
   @Get('fav/:id')
+  @UseGuards(JwtAuthGuard)
   async getAllfav(@Param('id') id: number) {
     return this.userService.getAllFav(id);
   }

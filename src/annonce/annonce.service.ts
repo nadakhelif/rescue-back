@@ -9,6 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from '../user/user.service';
 import { AnnonceStateEnum } from '../enums/annonceStateEnum';
 import { User } from '../user/entities/user';
+import { AnnonceCategoryEnum } from '../enums/annonceCategoryEnum';
+import { AnimalSexeEnum } from '../enums/animalSexeEnum';
 
 @Injectable()
 export class AnnonceService extends CrudService<Annonce> {
@@ -53,6 +55,41 @@ export class AnnonceService extends CrudService<Annonce> {
   }
   async findAll() {
     return await this.annonceRepository.find({ relations: ['publisher'] });
+  }
+  async paginer(skip: number, limit: number) {
+    const take = limit;
+    return await this.annonceRepository.find({ skip, take });
+  }
+  async searchByCriteria(
+    minAge: number,
+    maxAge: number,
+    category: AnnonceCategoryEnum,
+    sex: AnimalSexeEnum,
+    available: AnnonceStateEnum,
+  ) {
+    const query = this.annonceRepository.createQueryBuilder('annonce');
+
+    if (minAge !== undefined) {
+      query.where('annonce.age >= :minAge', { minAge });
+    }
+
+    if (maxAge !== undefined) {
+      query.andWhere('annonce.age <= :maxAge', { maxAge });
+    }
+
+    if (category !== undefined) {
+      query.andWhere('annonce.category = :category', { category });
+    }
+
+    if (sex !== undefined) {
+      query.andWhere('annonce.animal.sex = :sex', { sex });
+    }
+
+    if (available !== undefined) {
+      query.andWhere('annonce.state = :available', { available });
+    }
+
+    return query.getMany();
   }
 
   async addToFavorites(userId: number, annonceId: number) {

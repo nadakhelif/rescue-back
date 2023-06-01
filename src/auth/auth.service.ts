@@ -18,7 +18,7 @@ export class AuthService {
     private emailService: EmailService,
   ) {}
 
-  async verifyEmail(userId: number, verificationToken: string): Promise<User> {
+  async verifyEmail(userId: number, verificationToken: string) {
     try {
       const user = await this.userService.findOne(userId);
       if (user.verificationToken === verificationToken) {

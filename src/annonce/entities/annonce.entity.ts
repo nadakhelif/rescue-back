@@ -1,4 +1,4 @@
-import { TimeEntities } from 'src/Generic/timeEntity';
+import { TimeEntities } from 'src/generic/timeEntity';
 import { Animal } from 'src/animal/entities/animal';
 import { AnnonceStateEnum } from 'src/enums/annonceStateEnum';
 
@@ -12,6 +12,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../user/entities/user';
+import { AnnonceCategoryEnum } from '../../enums/annonceCategoryEnum';
 @Entity('annonce')
 export class Annonce extends TimeEntities {
   @PrimaryGeneratedColumn()
@@ -20,6 +21,8 @@ export class Annonce extends TimeEntities {
   title: string;
   @Column()
   description: string;
+  @Column()
+  category: AnnonceCategoryEnum;
   @Column({
     type: 'enum',
     enum: AnnonceStateEnum,

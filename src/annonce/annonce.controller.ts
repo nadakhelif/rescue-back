@@ -6,10 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { AnnonceService } from './annonce.service';
 import { CreateAnnonceDto } from './dto/create-annonce.dto';
 import { UpdateAnnonceDto } from './dto/update-annonce.dto';
+import { AnnonceCategoryEnum } from '../enums/annonceCategoryEnum';
+import { AnnonceStateEnum } from '../enums/annonceStateEnum';
+import { AnimalSexeEnum } from '../enums/animalSexeEnum';
 
 @Controller('annonce')
 export class AnnonceController {
@@ -31,6 +35,29 @@ export class AnnonceController {
   @Get()
   findAll() {
     return this.annonceService.findAll();
+  }
+  @Get('search')
+  searchByCriteria(
+    @Query('minAge') minAge: number,
+    @Query('maxAge') maxAge: number,
+    @Query('category') category: AnnonceCategoryEnum,
+    @Query('sex') sex: AnimalSexeEnum,
+    @Query('available') available: AnnonceStateEnum,
+  ) {
+    return this.annonceService.searchByCriteria(
+      minAge,
+      maxAge,
+      category,
+      sex,
+      available,
+    );
+  }
+  @Get('page')
+  async paginer(@Query() params) {
+    console.log(params);
+    const { page, limit } = params;
+    const skip = (page - 1) * limit;
+    return await this.annonceService.paginer(skip, limit);
   }
 
   @Get(':id')

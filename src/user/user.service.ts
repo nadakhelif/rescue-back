@@ -108,7 +108,7 @@ export class UserService extends CrudService<User> {
       user.verified = true;
 
       await this.userRepository.save(user);
-      return user;
+      return { message: 'user verified completed' };
     } catch (e) {
       throw new ConflictException(`couldn't update verify the id`);
     }
@@ -159,6 +159,7 @@ export class UserService extends CrudService<User> {
     }
     user.password = await bcrypt.hash(password, 10);
     await this.userRepository.save(user);
+    return { message: 'password changed success' };
   }
   async uploadProfilePic(id: number, file: Express.Multer.File) {
     const user = await this.userRepository.findOne({ where: { id: id } });
