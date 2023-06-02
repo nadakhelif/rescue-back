@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Req,
+  Res,
 } from '@nestjs/common';
 import { AnimalService } from './animal.service';
 import { CreateAnimalDto } from './dto/create-animal.dto';
@@ -60,6 +61,12 @@ export class AnimalController {
   @Get()
   findAll() {
     return this.animalService.findAll();
+  }
+  @Get('animal-image/:imagename')
+  findProfileImage(@Param('imagename') imagename, @Res() res) {
+    return of(
+      res.sendFile(join(process.cwd(), 'uploads/animalImages/' + imagename)),
+    );
   }
 
   @Get(':id')

@@ -37,7 +37,7 @@ export class AnimalService extends CrudService<Animal> {
     if (!animal) {
       throw new Error(`annonce with id ${id} not found`);
     }
-    animal.photo = `/uploads/animalImages/${file.filename}`;
+    animal.photo = `${file.filename}`;
     console.log(animal);
     return await this.animalRepository.save(animal);
   }

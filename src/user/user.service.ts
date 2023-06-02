@@ -59,19 +59,16 @@ export class UserService extends CrudService<User> {
     };
   }
   async login(credentials: LoginUserDto) {
-    // Récupére le login et le mot de passe
     const { email, password } = credentials;
-    // On peut se logger ou via le username ou le password
-    // Vérifier est ce qu'il y a un user avec ce login ou ce mdp
+
     const user = await this.userRepository
       .createQueryBuilder('user')
       .where('user.email = :email', { email })
       .getOne();
     //console.log(user);
-    // Si not user je déclenche une erreur
 
     if (!user) throw new NotFoundException('email ou password erronée');
-    // Si oui je vérifie est ce que le mot est correct ou pas
+
     const match = await bcrypt.compare(password, user.password);
     if (match) {
       const payload = {
@@ -191,5 +188,17 @@ export class UserService extends CrudService<User> {
       relations: ['favorites'],
     });
     return user.favorites;
+  }
+  async getAllPublishedAnnouncementsByUser(id) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['publishedAnnonces'],
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return user.publishedAnnonces;
   }
 }

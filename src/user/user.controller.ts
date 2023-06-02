@@ -51,7 +51,7 @@ export class UserController {
   }
 
   @Post(':id/profile-photo')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file', storage))
   async uploadProfilePhoto(
     @Param('id') id: number,
@@ -74,13 +74,17 @@ export class UserController {
   }
 
   @Get(':id')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
+  @Get('email/:email')
+  findOneByEmail(@Param('email') email: string) {
+    return this.userService.getByEmail(email);
+  }
 
   @Patch(':id')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
@@ -94,5 +98,9 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async getAllfav(@Param('id') id: number) {
     return this.userService.getAllFav(id);
+  }
+  @Get(':id/published-announcements')
+  getAllPublishedAnnouncementsByUser(@Param('id') id: string) {
+    return this.userService.getAllPublishedAnnouncementsByUser(id);
   }
 }
