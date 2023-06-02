@@ -11,6 +11,8 @@ import { AnnonceStateEnum } from '../enums/annonceStateEnum';
 import { User } from '../user/entities/user';
 import { AnnonceCategoryEnum } from '../enums/annonceCategoryEnum';
 import { AnimalSexeEnum } from '../enums/animalSexeEnum';
+import { pick } from 'lodash';
+
 
 @Injectable()
 export class AnnonceService extends CrudService<Annonce> {
@@ -36,7 +38,7 @@ export class AnnonceService extends CrudService<Annonce> {
           'There is no animal with the corresponding id',
         );
       }
-      const publisher = await this.userService.findOne(
+      const publisher = await this.userService.findOne1(
         createAnnonceDto.publisherId,
       );
       if (!publisher) {
@@ -55,7 +57,13 @@ export class AnnonceService extends CrudService<Annonce> {
   }
 
   async findAll() {
-    return await this.annonceRepository.find({ relations: ['publisher'] });
+    const annonces = await this.annonceRepository.find({ relations: ['publisher'] });
+    const sanitizedAnnonces = annonces.map(annonce => {
+      const { password, verificationToken, verified,deletedAt, ...sanitizedUser } = annonce.publisher;
+        annonce.publisher = sanitizedUser;
+        return annonce;
+    });
+    return annonces;
   }
   async paginer(skip: number, limit: number) {
     const take = limit;
@@ -89,36 +97,30 @@ export class AnnonceService extends CrudService<Annonce> {
     if (available !== undefined) {
       query.andWhere('annonce.state = :available', { available });
     }
-
     return query.getMany();
   }
 
   async addToFavorites(userId: number, annonceId: number) {
     const user = await this.userService.findOne(userId);
-
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
     const annonce = await this.annonceRepository.findOne({
       where: { id: annonceId },
     });
-
     if (!annonce) {
       throw new NotFoundException('Annonce not found');
     }
-
     // Check if the annonce is already in the favorites array
     const existingFavorite = user.favorites.find(
       (favorite) => favorite.id === annonce.id,
     );
-
     if (!existingFavorite) {
       user.favorites.push(annonce);
     }
-
     return await this.userRepository.save(user);
   }
+
   async deleteFromFav(annonceId, userId) {
     const user = await this.userService.findOne(userId);
     const annonce = await this.annonceRepository.findOne(annonceId);
@@ -129,6 +131,7 @@ export class AnnonceService extends CrudService<Annonce> {
       (user) => user.id !== userId,
     );
   }
+
   async findAllAvailable(): Promise<Annonce[]> {
     const statusQuery = AnnonceStateEnum.AVAILABLE;
     const annonces = await this.annonceRepository.find({
@@ -136,7 +139,6 @@ export class AnnonceService extends CrudService<Annonce> {
         state: statusQuery,
       },
     });
-
     return annonces;
   }
 

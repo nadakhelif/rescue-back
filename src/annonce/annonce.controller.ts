@@ -24,6 +24,7 @@ export class AnnonceController {
   create(@Body() createAnnonceDto: CreateAnnonceDto) {
     return this.annonceService.create(createAnnonceDto);
   }
+
   @Post('fav/:userId/:annonceId')
   async addFavorite(
     @Param('userId') userId: number,

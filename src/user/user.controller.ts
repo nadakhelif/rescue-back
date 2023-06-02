@@ -69,8 +69,8 @@ export class UserController {
   }
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  async findAll() {
+    return this.userService.findAll2();
   }
 
   @Get(':id')
@@ -78,6 +78,7 @@ export class UserController {
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
+
   @Get('email/:email')
   findOneByEmail(@Param('email') email: string) {
     return this.userService.getByEmail(email);
@@ -86,7 +87,7 @@ export class UserController {
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+    return this.userService.update1(+id, updateUserDto);
   }
 
   @Delete(':id')

@@ -58,6 +58,15 @@ export class UserService extends CrudService<User> {
       email: user.email,
     };
   }
+  async findAll2(){
+    const users = await this.findAll();
+    const sanitizedUsers = users.map(user => {
+      const { password, verificationToken, verified,deletedAt, ...sanitizedUser } = user;
+      return sanitizedUser;
+    });
+    return sanitizedUsers;
+  }
+
   async login(credentials: LoginUserDto) {
     const { email, password } = credentials;
 
@@ -83,7 +92,7 @@ export class UserService extends CrudService<User> {
       throw new NotFoundException('username ou password erronée');
     }
   }
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update1(id: number, updateUserDto: UpdateUserDto) : Promise<Partial<User>> {
     const user = await this.userRepository.findOne({ where: { id: id } });
     if (!user) {
       throw new NotFoundException('id erronée');
@@ -96,9 +105,11 @@ export class UserService extends CrudService<User> {
         );
       }
     }
-    await this.userRepository.update({ id }, updateUserDto);
-    return user;
+    const user1 = await this.userRepository.update({ id }, updateUserDto);
+    const { password, verificationToken, verified,deletedAt, ...sanitizedUser } = user;
+    return sanitizedUser;
   }
+
   async changeVerifyToTrue(id: number) {
     try {
       const user = await this.userRepository.findOne({ where: { id: id } });
@@ -110,7 +121,8 @@ export class UserService extends CrudService<User> {
       throw new ConflictException(`couldn't update verify the id`);
     }
   }
-  async getByEmail(email: string): Promise<any> {
+
+  async getByEmail(email: string): Promise<Partial<User>> {
     const user = await this.userRepository.findOne({
       where: { email: email },
     });
@@ -119,6 +131,7 @@ export class UserService extends CrudService<User> {
     }
     return user;
   }
+
   async createPasswordResetToken(id: number) {
     try {
       const passwordReset = new PasswordReset();
@@ -171,17 +184,33 @@ export class UserService extends CrudService<User> {
       where: { id },
       relations: ['favorites'],
     });
-
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
     if (!user.favorites) {
       user.favorites = [];
     }
-
     return user;
   }
+
+
+
+  async findOne1(id) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['favorites'],
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    if (!user.favorites) {
+      user.favorites = [];
+    }
+    const { password, verificationToken, verified,deletedAt, ...sanitizedUser } = user;
+    return sanitizedUser;
+  }
+
+
   async getAllFav(id) {
     const user = await this.userRepository.findOne({
       where: { id },
