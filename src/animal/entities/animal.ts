@@ -3,9 +3,10 @@
 import { AnimalSexeEnum } from 'src/enums/animalSexeEnum';
 import { AnimalStateEnum } from 'src/enums/animalStateEnum';
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { TimeEntities } from '../../generic/timeEntity';
 
 @Entity('animal') //extends TimeEntities
-export class Animal {
+export class Animal extends TimeEntities {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
