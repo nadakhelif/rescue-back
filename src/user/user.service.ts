@@ -110,6 +110,26 @@ export class UserService extends CrudService<User> {
       throw new ConflictException(`couldn't update verify the id`);
     }
   }
+  async findOne1(id) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['favorites'],
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    if (!user.favorites) {
+      user.favorites = [];
+    }
+    const {
+      password,
+      verificationToken,
+      verified,
+      deletedAt,
+      ...sanitizedUser
+    } = user;
+    return sanitizedUser;
+  }
   async getByEmail(email: string): Promise<any> {
     const user = await this.userRepository.findOne({
       where: { email: email },

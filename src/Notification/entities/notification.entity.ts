@@ -1,13 +1,14 @@
 import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {User} from "../../user/entities/user";
 import {Annonce} from "../../annonce/entities/annonce.entity";
+import {TimeEntities} from "../../generic/timeEntity";
 
-@Entity()
-export class NotificationEntity {
+@Entity('notification')
+export class NotificationEntity extends TimeEntities {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({default: false})
+  @Column({ default: false })
   isRead: boolean;
 
   @ManyToOne(() => Annonce,{cascade: true})
@@ -15,9 +16,9 @@ export class NotificationEntity {
 
   @ManyToOne(() => User,{cascade: true})
   @JoinColumn()
-  sender: User;
+  sender: Partial<User>;
 
   @ManyToOne(() => User, {cascade: true})
   @JoinColumn()
-  receiver: User;
+  receiver: Partial<User>;
 }

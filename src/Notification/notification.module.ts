@@ -17,7 +17,7 @@ import {EmailService} from "../email/email.service";
     TypeOrmModule.forFeature([PasswordReset]),
   ],
   controllers: [NotificationController],
-  providers: [NotificationService, UserService,JwtService,EmailService],
+  providers: [NotificationService, UserService, JwtService, EmailService],
   exports: [NotificationService],
 })
 export class NotificationModule {}

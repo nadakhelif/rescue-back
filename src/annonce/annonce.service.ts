@@ -1,6 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateAnnonceDto } from './dto/create-annonce.dto';
-import { UpdateAnnonceDto } from './dto/update-annonce.dto';
 import { CrudService } from '../common/crud.service';
 import { Repository } from 'typeorm';
 import { Annonce } from './entities/annonce.entity';
@@ -11,6 +15,7 @@ import { AnnonceStateEnum } from '../enums/annonceStateEnum';
 import { User } from '../user/entities/user';
 import { AnnonceCategoryEnum } from '../enums/annonceCategoryEnum';
 import { AnimalSexeEnum } from '../enums/animalSexeEnum';
+import { NotificationService } from '../Notification/notification.service';
 
 @Injectable()
 export class AnnonceService extends CrudService<Annonce> {
@@ -21,6 +26,8 @@ export class AnnonceService extends CrudService<Annonce> {
     private userRepository: Repository<User>,
     private userService: UserService,
     private animalService: AnimalService,
+    @Inject(forwardRef(() => NotificationService))
+    private NotifService: NotificationService,
   ) {
     super(annonceRepository);
   }
@@ -103,6 +110,7 @@ export class AnnonceService extends CrudService<Annonce> {
 
     const annonce = await this.annonceRepository.findOne({
       where: { id: annonceId },
+      relations: ['publisher'],
     });
 
     if (!annonce) {
@@ -116,9 +124,22 @@ export class AnnonceService extends CrudService<Annonce> {
 
     if (!existingFavorite) {
       user.favorites.push(annonce);
+      const notif = {
+        sender: user,
+        receiver: annonce.publisher,
+        annonce: annonce,
+      };
+      console.log(notif);
+      await this.NotifService.createNotification(notif);
     }
+    await this.userRepository.save(user);
+    const favorites = user.favorites.map((favorite) => {
+      const { publisher, animal, ...annonce } = favorite;
+      return annonce;
+    });
+    const sanitizedUser = this.userService.findOne1(user.id);
 
-    return await this.userRepository.save(user);
+    return sanitizedUser;
   }
   async deleteFromFav(annonceId, userId) {
     const user = await this.userService.findOne(userId);
