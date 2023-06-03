@@ -69,13 +69,14 @@ export class AnnonceService extends CrudService<Annonce> {
     available: AnnonceStateEnum,
   ) {
     const query = this.annonceRepository.createQueryBuilder('annonce');
+    query.innerJoin('annonce.animal', 'animal');
 
     if (minAge !== undefined) {
-      query.where('annonce.age >= :minAge', { minAge });
+      query.where('animal.age >= :minAge', { minAge });
     }
 
     if (maxAge !== undefined) {
-      query.andWhere('annonce.age <= :maxAge', { maxAge });
+      query.andWhere('animal.age <= :maxAge', { maxAge });
     }
 
     if (category !== undefined) {
@@ -83,7 +84,7 @@ export class AnnonceService extends CrudService<Annonce> {
     }
 
     if (sex !== undefined) {
-      query.andWhere('annonce.animal.sex = :sex', { sex });
+      query.andWhere('animal.sex = :sex', { sex });
     }
 
     if (available !== undefined) {

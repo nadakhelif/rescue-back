@@ -100,6 +100,7 @@ export class UserController {
     return this.userService.getAllFav(id);
   }
   @Get(':id/published-announcements')
+  @UseGuards(JwtAuthGuard)
   getAllPublishedAnnouncementsByUser(@Param('id') id: string) {
     return this.userService.getAllPublishedAnnouncementsByUser(id);
   }
