@@ -1,4 +1,9 @@
-import { forwardRef, Inject, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateAnnonceDto } from './dto/create-annonce.dto';
 import { CrudService } from '../common/crud.service';
 import { Repository } from 'typeorm';
@@ -10,7 +15,7 @@ import { AnnonceStateEnum } from '../enums/annonceStateEnum';
 import { User } from '../user/entities/user';
 import { AnnonceCategoryEnum } from '../enums/annonceCategoryEnum';
 import { AnimalSexeEnum } from '../enums/animalSexeEnum';
-import { NotificationService } from "../Notification/notification.service";
+import { NotificationService } from '../Notification/notification.service';
 
 @Injectable()
 export class AnnonceService extends CrudService<Annonce> {
@@ -105,6 +110,7 @@ export class AnnonceService extends CrudService<Annonce> {
 
     const annonce = await this.annonceRepository.findOne({
       where: { id: annonceId },
+      relations: ['publisher'],
     });
 
     if (!annonce) {

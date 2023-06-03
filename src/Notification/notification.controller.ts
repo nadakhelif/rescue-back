@@ -14,7 +14,7 @@ export class NotificationController {
 
 
   @Get('unread/:userid')
-  getUnreadNotifsForUser(@Param('userid') id: number){
+  async getUnreadNotifsForUser(@Param('userid') id: number){
     return this.notificationService.getUnreadNotifsForUser(id);
   }
 
