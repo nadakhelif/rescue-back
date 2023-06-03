@@ -132,8 +132,14 @@ export class AnnonceService extends CrudService<Annonce> {
       console.log(notif);
       await this.NotifService.createNotification(notif);
     }
+    await this.userRepository.save(user);
+    const favorites = user.favorites.map((favorite) => {
+      const { publisher, animal, ...annonce } = favorite;
+      return annonce;
+    });
+    const sanitizedUser = this.userService.findOne1(user.id);
 
-    return await this.userRepository.save(user);
+    return sanitizedUser;
   }
   async deleteFromFav(annonceId, userId) {
     const user = await this.userService.findOne(userId);
