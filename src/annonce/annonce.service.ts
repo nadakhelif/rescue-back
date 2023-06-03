@@ -84,7 +84,7 @@ export class AnnonceService extends CrudService<Annonce> {
     }
 
     if (sex !== undefined) {
-      query.andWhere('animal.sex = :sex', { sex });
+      query.andWhere('animal.sexe = :sex', { sex });
     }
 
     if (available !== undefined) {
