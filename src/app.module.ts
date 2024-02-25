@@ -12,7 +12,7 @@ import { AnimalModule } from './animal/animal.module';
 import { AnnonceModule } from './annonce/annonce.module';
 
 import appConfig from './config/app.config';
-import { NotificationModule } from "./Notification/notification.module";
+import { NotificationModule } from './Notification/notification.module';
 
 @Module({
   imports: [
@@ -45,7 +45,7 @@ import { NotificationModule } from "./Notification/notification.module";
     EmailModule,
     AnimalModule,
     AnnonceModule,
-    NotificationModule
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
